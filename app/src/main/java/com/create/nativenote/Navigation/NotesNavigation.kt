@@ -20,10 +20,11 @@ fun NotesNavigation(navController: NavHostController, modifier: Modifier = Modif
         }
 
         composable(route = "home") {
-            NoteScreen()
+            NoteScreen(navController)
         }
-        composable(route = "insertNoteScreen") {
-            InsertNoteScreen()
+        composable(route = "insertNoteScreen" + "/{id}") {
+            val id = it.arguments?.getString("id")
+            InsertNoteScreen(navController ,id)
 
         }
     }

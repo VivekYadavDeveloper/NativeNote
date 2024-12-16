@@ -1,6 +1,7 @@
 package com.create.nativenote.Model
 
 data class NotesModel(
-    val title: String,
-    val description: String,
+    val id: String = "",
+    val title: String = "",
+    val description: String = "",
 )

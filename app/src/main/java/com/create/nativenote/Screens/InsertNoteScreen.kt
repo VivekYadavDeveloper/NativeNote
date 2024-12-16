@@ -1,5 +1,6 @@
 package com.create.nativenote.Screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,26 +21,78 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.create.nativenote.Model.NotesModel
 import com.create.nativenote.ui.theme.colorBlack
 import com.create.nativenote.ui.theme.colorGray
 import com.create.nativenote.ui.theme.colorLightGray
 import com.create.nativenote.ui.theme.colorRed
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun InsertNoteScreen(modifier: Modifier? = null) {
+
+fun InsertNoteScreen(navController: NavController, id: String?) {
+
+
+    val context = LocalContext.current
+    val firebaseDB = FirebaseFirestore.getInstance()
+    val notesCollection = firebaseDB.collection("notes")
+
+    /* State variables for title and description */
+    val title = remember { mutableStateOf("") }
+    val description = remember { mutableStateOf("") }
+
+
+
+    LaunchedEffect(Unit) {
+
+        if (id != "defaultId") {
+            notesCollection.document(id.toString()).get().addOnSuccessListener {
+                val singleData = it.toObject(NotesModel::class.java)
+                title.value = singleData!!.title
+                description.value = singleData.description
+            }
+        }
+    }
+
     Scaffold(floatingActionButton = {
         FloatingActionButton(
             onClick = {
-                /*TODO : Insert Note*/
+                if (title.value.isEmpty() && description.value.isEmpty()) {
+                    Toast.makeText(context, "Enter Valid Data", Toast.LENGTH_SHORT).show()
+                } else {
+                    val myNoteId = if (id != "defaultId") {
+                        id.toString()
+                    } else {
+                        notesCollection.document().id
+                    }
+                    val notes =
+                        NotesModel(
+                            id = myNoteId,
+                            title = title.value,
+                            description = description.value
+                        )
+                    notesCollection.document(myNoteId).set(notes).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Toast.makeText(context, "Task Added", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                }
             },
             containerColor = colorRed,
             contentColor = colorLightGray,
@@ -47,9 +100,7 @@ fun InsertNoteScreen(modifier: Modifier? = null) {
             content = {
                 Icon(
                     imageVector = Icons.Default.Done,
-                    contentDescription = "Done"
-                )
-            }
+                    contentDescription = "Done")}
         )
 
     }) { innerPadding ->
@@ -72,6 +123,7 @@ fun InsertNoteScreen(modifier: Modifier? = null) {
                 )
                 Spacer(Modifier.height(10.dp))
                 TextField(
+                    textStyle = TextStyle(color = colorLightGray),
                     colors = TextFieldDefaults.colors(
 //                        focusedTextColor = colorGray,
                         focusedContainerColor = colorGray,
@@ -93,12 +145,13 @@ fun InsertNoteScreen(modifier: Modifier? = null) {
                             )
                         )
                     },
-                    value = "",
-                    onValueChange = { /*TODO : Title*/ },
+                    value = title.value,
+                    onValueChange = { title.value = it },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(20.dp))
                 TextField(
+                    textStyle = TextStyle(color = colorLightGray),
                     colors = TextFieldDefaults.colors(
 //                        focusedTextColor = colorGray,
                         focusedContainerColor = colorGray,
@@ -120,8 +173,8 @@ fun InsertNoteScreen(modifier: Modifier? = null) {
                             )
                         )
                     },
-                    value = "",
-                    onValueChange = { /*TODO : Description*/ },
+                    value = description.value,
+                    onValueChange = { description.value = it },
                     modifier = Modifier
                         .fillMaxHeight(0.6f)
                         .fillMaxWidth()

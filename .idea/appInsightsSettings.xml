@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.create.nativenote" />
+                  <option name="mobileSdkAppId" value="1:1016756591826:android:4d0f98a019703a5ae0210b" />
+                  <option name="projectId" value="nativenotes-9b6d3" />
+                  <option name="projectNumber" value="1016756591826" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

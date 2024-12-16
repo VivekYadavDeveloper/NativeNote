@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1016756591826",
+    "project_id": "nativenotes-9b6d3",
+    "storage_bucket": "nativenotes-9b6d3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016756591826:android:4d0f98a019703a5ae0210b",
+        "android_client_info": {
+          "package_name": "com.create.nativenote"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzp0I7-Ls2B76QmDwjLUltNWG71l2J-D4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
